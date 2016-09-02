@@ -1,0 +1,52 @@
+---
+title: "test_simulate"
+output: html_document
+---
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+gwas = read.table("data_copyover/ENSG00000140564.sorted.tab", header=T)
+snpdat = read.table("data_copyover/gwas_furin_region.snpdat.txt", header=T)
+library(data.table)
+ld = as.matrix(fread("data_copyover/gwas_furin_region.ld.txt", header=F))
+```
+
+```{r}
+par(mfrow=c(2,1))
+gwas[which(gwas$SNPID=="rs4702"),]
+snpdat[pick_snp(0.4546, snpdat ),]
+hist(ifelse(snpdat$FREQ1<=0.5,snpdat$FREQ1,1-snpdat$FREQ1), breaks=100)
+snpdat[pick_snp(0.4546, snpdat ),]
+```
+
+```{r}
+ld1 = ld
+diag(ld1) = diag(ld1)+0.01
+det(ld1)
+summary(diag(ld1))
+diag(ld1) = diag(ld1)+0.01
+det(ld1)
+diag(ld1) = diag(ld1)+0.01
+det(ld1)
+diag(ld1) = diag(ld1)+0.01
+det(ld1)
+diag(ld1) = diag(ld1)+0.01
+det(ld1)
+diag(ld1) = diag(ld1)+0.01
+det(ld1)
+chol(ld1)
+det(ld1) == 0
+```
+
+```{r}
+par(mfrow=c(2,1))
+i = pick_snp(0.4546, snpdat )
+plot(snpdat$POS, simulate_unscaled_betas(1.5, i, ld1)$betas); plot(snpdat$POS, simulate_unscaled_betas(0,i, ld1)$betas)
+```
+
+
